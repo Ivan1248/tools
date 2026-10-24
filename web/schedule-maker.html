@@ -7,56 +7,65 @@
   <title>Schedule Maker</title>
   <style>
     :root {
-      /* Colors */
-      --primary: #4A90E2;
-      --secondary: #27ae60;
-      --error: #c0392b;
-      --bg-app: #f4f7f9;
-      --bg-panel: #ffffff;
+      --primary: #2f74c0;
       --bg-alt: #f8f9fa;
       --text-main: #2c3e50;
-      --text-body: #333333;
-      --text-muted: #888888;
+      --text-muted: #666666;
       --border-color: #e0e6ed;
-      /* Spacing & Borders */
-      --radius: 6px;
       --radius-sm: 3px;
       --space-sm: 6px;
       --space-md: 10px;
-      --shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      /* Base for all rem sizes */
+      font-size: 14px;
     }
 
-    /* Base Styles */
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      font-size: 14px;
       padding: var(--space-sm);
       max-width: 960px;
       margin: 0 auto;
-      background-color: var(--bg-app);
-      color: var(--text-body);
+      background: white;
+      color: #333;
       line-height: 1.35;
     }
 
     h1 {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       color: var(--text-main);
       margin: 0 var(--space-sm) 0 0;
     }
 
     .panel {
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: var(--space-sm) var(--space-md);
-      margin-bottom: var(--space-sm);
-      border: 1px solid var(--border-color);
+      padding: var(--space-md) 0;
+    }
+
+    .panel + .panel {
+      border-top: 1px solid var(--border-color);
+    }
+
+    .panel-title,
+    summary {
+      font-weight: 600;
+      color: var(--text-main);
     }
 
     .panel-title {
-      font-weight: 600;
-      color: var(--text-main);
       margin-bottom: 4px;
+    }
+
+    summary {
+      cursor: pointer;
+    }
+
+    pre,
+    code,
+    #data-input {
+      font-family: Consolas, monospace;
+      font-size: 0.9rem;
+    }
+
+    .scroll-x {
+      overflow-x: auto;
     }
 
     /* Toolbar */
@@ -70,7 +79,7 @@
     .field {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--space-sm);
       font-weight: 600;
     }
 
@@ -79,7 +88,7 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 1rem;
       background: white;
       min-width: 0;
     }
@@ -91,7 +100,7 @@
       cursor: pointer;
       font-weight: 600;
       font-family: inherit;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: white;
       background: var(--primary);
     }
@@ -107,7 +116,7 @@
     }
 
     .btn-master {
-      background: var(--secondary);
+      background: #1e8449;
     }
 
     .btn-plain {
@@ -120,10 +129,6 @@
     }
 
     /* Calendar */
-    .calendar-container {
-      overflow-x: auto;
-    }
-
     .cal-grid {
       display: grid;
       min-width: max-content;
@@ -134,8 +139,7 @@
       text-align: center;
       padding: 1px 4px;
       background: var(--bg-alt);
-      font-size: 0.85rem;
-      font-weight: bold;
+      font-size: 0.95rem;
       color: #5a6c7f;
       border-left: 1px solid var(--border-color);
       border-bottom: 1px solid var(--text-main);
@@ -150,7 +154,7 @@
     .time-marker {
       position: absolute;
       right: 4px;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       font-weight: 600;
       transform: translateY(-50%);
@@ -170,23 +174,12 @@
       border-radius: var(--radius-sm);
       padding: 1px 4px;
       color: #000;
-      font-size: 0.72rem;
+      font-size: 0.82rem;
       border: 1px solid rgba(0, 0, 0, 0.1);
       overflow: hidden;
+      overflow-wrap: anywhere;
       box-sizing: border-box;
       line-height: 1.15;
-    }
-
-    .room-label {
-      font-weight: 700;
-    }
-
-    .event-names div {
-      word-break: break-word;
-    }
-
-    .event-names .selected {
-      font-weight: 700;
     }
 
     .hint {
@@ -195,22 +188,16 @@
 
     /* Messages */
     #messages {
-      color: var(--error);
+      color: #c0392b;
       white-space: pre-wrap;
-      font-family: Consolas, monospace;
-      font-size: 0.8rem;
       margin: 0;
     }
 
     /* Events table */
-    .table-wrap {
-      overflow-x: auto;
-      margin-top: var(--space-sm);
-    }
-
     table {
+      margin-top: var(--space-sm);
       border-collapse: collapse;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
     }
 
     th,
@@ -231,35 +218,21 @@
     }
 
     /* Data input */
-    summary {
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
     #data-input {
       display: block;
       width: 100%;
       box-sizing: border-box;
       height: 180px;
       margin-top: var(--space-sm);
-      font-family: Consolas, monospace;
-      font-size: 0.8rem;
       tab-size: 4;
       white-space: pre;
       resize: vertical;
     }
 
-    code,
-    .formula {
-      font-family: Consolas, monospace;
-      font-size: 0.8rem;
-      background: var(--bg-alt);
-      border-radius: var(--radius-sm);
-    }
-
     code {
       padding: 1px 4px;
+      background: var(--bg-alt);
+      border-radius: var(--radius-sm);
     }
 
     #data-panel p {
@@ -269,7 +242,6 @@
     .formula {
       display: block;
       padding: 4px var(--space-sm);
-      border: 1px solid var(--border-color);
       white-space: pre-wrap;
       word-break: break-all;
     }
@@ -291,16 +263,16 @@
     <span id="status" class="status-msg"></span>
   </div>
 
-  <div class="panel calendar-container" id="calendar-view"></div>
+  <div class="panel scroll-x" id="calendar-view"></div>
 
-  <div class="panel" id="messages-panel" style="display: none;">
+  <div class="panel" id="messages-panel" hidden>
     <div class="panel-title">Parsing messages</div>
     <pre id="messages"></pre>
   </div>
 
-  <details class="panel" id="events-panel" style="display: none;">
+  <details class="panel" id="events-panel" hidden>
     <summary id="events-title">Events</summary>
-    <div class="table-wrap">
+    <div class="scroll-x">
       <table>
         <thead>
           <tr><th>Date</th><th>Start</th><th>End</th><th>Room</th><th>Names</th></tr>
@@ -487,7 +459,7 @@
         people.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
       personSelect.value = people.includes(selected) ? selected : '';
 
-      document.getElementById('messages-panel').style.display = errors.length ? 'block' : 'none';
+      document.getElementById('messages-panel').hidden = !errors.length;
       document.getElementById('messages').textContent = errors.join('\n');
       if (errors.length && !events.length) document.getElementById('data-panel').open = true;
 
@@ -498,7 +470,9 @@
       const person = personSelect.value;
       const shown = person ? byPerson[person] : events;
       document.getElementById('formula').textContent = sheetsFormula();
-      document.getElementById('export-one-btn').disabled = !person;
+      const exportOneBtn = document.getElementById('export-one-btn');
+      exportOneBtn.disabled = !person;
+      exportOneBtn.title = person ? '' : 'Select a person first';
       document.getElementById('export-zip-btn').disabled = !events.length;
       renderCalendar(shown, person);
       renderTable(shown, person);
@@ -528,7 +502,7 @@
       html += '<div></div>';
       days.forEach(d => {
         const weekday = new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
-        html += `<div class="cal-day-title">${weekday} <span style="font-weight:normal;">${d}</span></div>`;
+        html += `<div class="cal-day-title"><b>${weekday}</b> ${d}</div>`;
       });
 
       html += `<div class="cal-ruler" style="height:${height}px;">`;
@@ -556,8 +530,8 @@
           const tooltip = `${title ? title + '\n' : ''}${ev.room}, ${ev.start}–${ev.end}\n${ev.names.join('\n')}`;
           html += `<div class="event-block" title="${esc(tooltip)}" style="background:${roomColors[ev.room]};
               top:${top + 1}px; height:${h - 1}px; left:calc(${(100 * i) / lanes.length}% + 1px); width:calc(${100 / lanes.length}% - 2px);">
-            <div class="room-label">[${esc(ev.room)}]</div>
-            <div class="event-names">${ev.names.map(n => `<div${n === person ? ' class="selected"' : ''}>${esc(n)}</div>`).join('')}</div>
+            <b>[${esc(ev.room)}]</b>
+            ${ev.names.map(n => `<div>${n === person ? `<b>${esc(n)}</b>` : esc(n)}</div>`).join('')}
           </div>`;
         }));
         html += '</div>';
@@ -567,7 +541,7 @@
     }
 
     function renderTable(evs, person) {
-      document.getElementById('events-panel').style.display = evs.length ? 'block' : 'none';
+      document.getElementById('events-panel').hidden = !evs.length;
       document.getElementById('events-title').textContent = `Events (${evs.length})`;
       document.getElementById('events-body').innerHTML = evs
         .slice().sort((a, b) => (a.date + a.start + a.room).localeCompare(b.date + b.start + b.room))
