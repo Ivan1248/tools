@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Maker</title>
+  <style>
+    :root {
+      /* Colors */
+      --primary: #4A90E2;
+      --secondary: #27ae60;
+      --error: #c0392b;
+      --bg-app: #f4f7f9;
+      --bg-panel: #ffffff;
+      --bg-alt: #f8f9fa;
+      --text-main: #2c3e50;
+      --text-body: #333333;
+      --text-muted: #888888;
+      --border-color: #e0e6ed;
+      /* Spacing & Borders */
+      --radius: 12px;
+      --radius-sm: 4px;
+      --space-xs: 5px;
+      --space-sm: 10px;
+      --space-md: 15px;
+      --space-lg: 20px;
+      --space-xl: 25px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Base Styles */
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding: var(--space-lg);
+      margin: 0;
+      background-color: var(--bg-app);
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--text-main);
+      margin-bottom: var(--space-xl);
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+      border: 1px solid var(--border-color);
+    }
+
+    .panel-title {
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: var(--space-sm);
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm) var(--space-md);
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .input {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: white;
+      min-width: 0;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: white;
+      background: var(--primary);
+    }
+
+    .btn:hover {
+      filter: brightness(0.9);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+      filter: none;
+    }
+
+    .btn-master {
+      background: var(--secondary);
+    }
+
+    .btn-plain {
+      background: var(--text-main);
+    }
+
+    .status-msg {
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    /* Calendar */
+    .calendar-container {
+      overflow-x: auto;
+    }
+
+    .cal-grid {
+      display: grid;
+      min-width: max-content;
+    }
+
+    .cal-day-title {
+      text-align: center;
+      padding: 6px;
+      background: var(--bg-alt);
+      font-weight: bold;
+      color: #5a6c7f;
+      border-left: 1px solid var(--border-color);
+      border-bottom: 2px solid var(--text-main);
+      white-space: nowrap;
+    }
+
+    .cal-ruler {
+      position: relative;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .time-marker {
+      position: absolute;
+      right: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      transform: translateY(-50%);
+    }
+
+    .time-marker:first-child {
+      transform: none;
+    }
+
+    .cal-day {
+      position: relative;
+      border-left: 1px solid var(--border-color);
+    }
+
+    .event-block {
+      position: absolute;
+      border-radius: var(--radius-sm);
+      padding: 3px 5px;
+      color: #000;
+      font-size: 0.75rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      box-sizing: border-box;
+      line-height: 1.25;
+    }
+
+    .event-title {
+      color: rgba(0, 0, 0, 0.75);
+    }
+
+    .room-label {
+      font-weight: 700;
+    }
+
+    .event-names div {
+      word-break: break-word;
+    }
+
+    .event-names .selected {
+      font-weight: 700;
+    }
+
+    .hint {
+      color: var(--text-muted);
+    }
+
+    /* Messages */
+    #messages {
+      color: var(--error);
+      white-space: pre-wrap;
+      font-family: Consolas, monospace;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    /* Events table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 4px 10px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td:last-child {
+      white-space: normal;
+    }
+
+    th {
+      background: var(--bg-alt);
+      color: var(--text-main);
+    }
+
+    /* Data input */
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    #data-input {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      height: 260px;
+      margin-top: var(--space-sm);
+      font-family: Consolas, monospace;
+      font-size: 0.85rem;
+      tab-size: 4;
+      white-space: pre;
+      resize: vertical;
+    }
+
+    code,
+    .formula {
+      font-family: Consolas, monospace;
+      font-size: 0.85rem;
+      background: var(--bg-alt);
+      border-radius: var(--radius-sm);
+    }
+
+    code {
+      padding: 1px 4px;
+    }
+
+    .formula {
+      display: block;
+      padding: var(--space-sm);
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Schedule maker</h2>
+
+  <div class="panel toolbar">
+    <label class="field">Title <input type="text" id="title-input" class="input" placeholder="e.g. DL-lab1" size="16"></label>
+    <label class="field">Person
+      <select id="person-select" class="input">
+        <option value="">(All)</option>
+      </select>
+    </label>
+    <button id="export-one-btn" class="btn" disabled>Download .ics</button>
+    <button id="export-zip-btn" class="btn btn-master" disabled>Download all (.zip)</button>
+    <button id="copy-link-btn" class="btn btn-plain">Copy link</button>
+    <span id="status" class="status-msg"></span>
+  </div>
+
+  <div class="panel calendar-container" id="calendar-view"></div>
+
+  <div class="panel" id="messages-panel" style="display: none;">
+    <div class="panel-title">Parsing messages</div>
+    <pre id="messages"></pre>
+  </div>
+
+  <div class="panel" id="events-panel" style="display: none;">
+    <div class="panel-title" id="events-title">Events</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Start</th><th>End</th><th>Room</th><th>Names</th></tr>
+        </thead>
+        <tbody id="events-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <details class="panel" id="data-panel">
+    <summary>Data</summary>
+    <textarea id="data-input" class="input" spellcheck="false" placeholder="Paste cells, e.g.&#10;2026-10-27|09:00|11:00|A109&#9;Name Surname&#9;2026-10-27|09:00|11:00|A110&#9;Other Person"></textarea>
+    <p>
+      Each event is a <code>YYYY-MM-DD|HH:MM|HH:MM|ROOM</code> cell followed by names (separated by tabs, commas, or
+      new lines) up to the next event cell.
+    </p>
+    <p>Google Sheets formula for a link to this page (adjust the title and the range):</p>
+    <code class="formula" id="formula"></code>
+    <p>Per-person link, with the URL above in <code>F1</code> (without <code>HYPERLINK</code>) and a name in <code>H2</code>:</p>
+    <code class="formula">=HYPERLINK($F$1 &amp; "&amp;person=" &amp; ENCODEURL(H2), H2)</code>
+  </details>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>
+    // Pastel1 colors, assigned to rooms by order of appearance (as in schedule_maker.py)
+    const PALETTE = ['#fbb4ae', '#b3cde3', '#ccebc5', '#decbe4', '#fed9a6', '#ffffcc', '#e5d8bd', '#fddaec', '#f2f2f2'];
+    const PX_PER_MIN = 1.1;
+    const PARSE_DELAY_MS = 300;
+
+    const EVENT_RE = /(\d{4}-\d{2}-\d{2})\|(\d{1,2}:\d{2})\|(\d{1,2}:\d{2})\|([^|\t\r\n]+)/g;
+    const DATE_RE = /\d{4}-\d{2}-\d{2}/g;
+
+    const titleInput = document.getElementById('title-input');
+    const personSelect = document.getElementById('person-select');
+    const dataInput = document.getElementById('data-input');
+    const statusEl = document.getElementById('status');
+
+    let events = [];
+    let byPerson = {};
+    let roomColors = {};
+    let parseTimer = null;
+
+    // --- Helpers ---
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function normalizeTime(t) {
+      const [h, m] = t.split(':');
+      return h.padStart(2, '0') + ':' + m;
+    }
+
+    function timeToMinutes(t) {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function addDays(date, n) {
+      const d = new Date(date + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() + n);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function safeFileName(s) {
+      return s.trim().replace(/\s+/g, '_').replace(/[\\/:*?"<>|]/g, '');
+    }
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+      if (msg) setTimeout(() => { if (statusEl.textContent === msg) statusEl.textContent = ''; }, 3000);
+    }
+
+    function validateEvent(ev) {
+      const d = new Date(ev.date + 'T00:00:00Z');
+      if (isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== ev.date) return 'Invalid date';
+      for (const t of [ev.start, ev.end]) {
+        const [h, m] = t.split(':').map(Number);
+        if (h > 23 || m > 59) return `Invalid time ${t}`;
+      }
+      if (timeToMinutes(ev.end) <= timeToMinutes(ev.start)) return 'End time is not after start time';
+      return null;
+    }
+
+    // --- Parsing ---
+
+    function parseSchedule(text) {
+      const parsed = [];
+      const errors = [];
+      const multiline = text.includes('\n');
+      const where = pos => multiline ? `Line ${text.slice(0, pos).split('\n').length}: ` : '';
+      const addError = (pos, msg) => errors.push({ pos, msg: where(pos) + msg });
+
+      // Every date token ends the names block of the previous event, even if it is malformed
+      const dateStarts = [...text.matchAll(DATE_RE)].map(m => m.index);
+      const nextDateAfter = pos => {
+        const next = dateStarts.find(p => p > pos);
+        return next === undefined ? text.length : next;
+      };
+
+      const eventStarts = new Set();
+      for (const m of text.matchAll(EVENT_RE)) {
+        eventStarts.add(m.index);
+        const namesEnd = nextDateAfter(m.index + m[0].length - 1);
+        const names = text.slice(m.index + m[0].length, namesEnd)
+          .split(/[,\t\r\n]+| {2,}/).map(s => s.trim()).filter(Boolean);
+        const ev = { date: m[1], start: normalizeTime(m[2]), end: normalizeTime(m[3]), room: m[4].trim(), names };
+        const err = validateEvent(ev);
+        if (err) {
+          addError(m.index, `${err}: ${m[0]}`);
+          continue;
+        }
+        if (!names.length) addError(m.index, `Event has no names: ${m[0]}`);
+        parsed.push(ev);
+      }
+
+      for (const pos of dateStarts) {
+        if (!eventStarts.has(pos)) {
+          const excerpt = text.slice(pos).split(/[\t\r\n]/)[0];
+          addError(pos, `Incomplete or malformed event: ${excerpt}`);
+        }
+      }
+
+      if (!parsed.length && !errors.length && text.trim()) {
+        addError(0, 'No events found. Expected cells like "2026-10-27|09:00|11:00|A109" followed by names.');
+      }
+      return { events: parsed, errors: errors.sort((a, b) => a.pos - b.pos).map(e => e.msg) };
+    }
+
+    // --- URL hash (title, data, person) ---
+
+    function readHash() {
+      const params = {};
+      for (const part of location.hash.slice(1).split('&')) {
+        const i = part.indexOf('=');
+        if (i < 0) continue;
+        try {
+          params[part.slice(0, i)] = decodeURIComponent(part.slice(i + 1));
+        } catch (e) {
+          params._error = `Could not decode the "${part.slice(0, i)}" URL parameter: ${e.message}`;
+        }
+      }
+      return params;
+    }
+
+    // Keep "|" and ":" readable to make links shorter
+    function encodeParam(s) {
+      return encodeURIComponent(s).replace(/%7C/g, '|').replace(/%3A/g, ':');
+    }
+
+    function writeHash() {
+      const parts = [];
+      if (titleInput.value) parts.push('title=' + encodeParam(titleInput.value));
+      if (dataInput.value.trim()) parts.push('data=' + encodeParam(dataInput.value.trim()));
+      if (personSelect.value) parts.push('person=' + encodeParam(personSelect.value));
+      history.replaceState(null, '', location.pathname + location.search + (parts.length ? '#' + parts.join('&') : ''));
+    }
+
+    function loadFromHash() {
+      const params = readHash();
+      titleInput.value = params.title || '';
+      dataInput.value = params.data || '';
+      document.getElementById('data-panel').open = !params.data;
+      update(params.person || '', params._error);
+    }
+
+    // --- State update ---
+
+    function update(preferredPerson, extraError) {
+      const result = parseSchedule(dataInput.value);
+      events = result.events;
+      const errors = extraError ? [extraError, ...result.errors] : result.errors;
+
+      roomColors = {};
+      byPerson = {};
+      events.forEach(ev => {
+        if (!(ev.room in roomColors)) roomColors[ev.room] = PALETTE[Object.keys(roomColors).length % PALETTE.length];
+        ev.names.forEach(n => (byPerson[n] = byPerson[n] || []).push(ev));
+      });
+
+      const people = Object.keys(byPerson).sort((a, b) => a.localeCompare(b));
+      const selected = preferredPerson !== undefined ? preferredPerson : personSelect.value;
+      personSelect.innerHTML = '<option value="">(All)</option>' +
+        people.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+      personSelect.value = people.includes(selected) ? selected : '';
+
+      const messagesPanel = document.getElementById('messages-panel');
+      messagesPanel.style.display = errors.length ? 'block' : 'none';
+      document.getElementById('messages').textContent = errors.join('\n');
+      if (errors.length && !events.length) document.getElementById('data-panel').open = true;
+
+      document.getElementById('formula').textContent = sheetsFormula();
+      render();
+    }
+
+    function render() {
+      const person = personSelect.value;
+      const shown = person ? byPerson[person] : events;
+      document.getElementById('export-one-btn').disabled = !person;
+      document.getElementById('export-zip-btn').disabled = !events.length;
+      renderCalendar(shown, person);
+      renderTable(shown, person);
+    }
+
+    // --- Rendering ---
+
+    function renderCalendar(evs, person) {
+      const container = document.getElementById('calendar-view');
+      if (!evs.length) {
+        container.innerHTML = `<span class="hint">${events.length ? 'No events for this person.' : 'No events. Paste a schedule under "Data" or open a link with data.'}</span>`;
+        return;
+      }
+
+      const dates = evs.map(ev => ev.date).sort();
+      const days = [];
+      for (let d = dates[0]; d <= dates[dates.length - 1]; d = addDays(d, 1)) days.push(d);
+
+      const startHour = Math.floor(Math.min(...evs.map(ev => timeToMinutes(ev.start))) / 60);
+      const endHour = Math.ceil(Math.max(...evs.map(ev => timeToMinutes(ev.end))) / 60);
+      const hourPx = 60 * PX_PER_MIN;
+      const height = (endHour - startHour) * hourPx;
+      const title = titleInput.value.trim();
+
+      let html = `<div class="cal-grid" style="grid-template-columns: 50px repeat(${days.length}, minmax(150px, 1fr));">`;
+      html += '<div></div>';
+      days.forEach(d => {
+        const weekday = new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
+        html += `<div class="cal-day-title">${weekday} <span style="font-weight:normal;">${d}</span></div>`;
+      });
+
+      html += `<div class="cal-ruler" style="height:${height}px;">`;
+      for (let h = startHour; h < endHour; h++) {
+        html += `<div class="time-marker" style="top:${(h - startHour) * hourPx}px;">${String(h).padStart(2, '0')}:00</div>`;
+      }
+      html += '</div>';
+
+      const gridLines = `repeating-linear-gradient(to bottom, var(--border-color) 0 1px, transparent 1px ${hourPx}px)`;
+      days.forEach(d => {
+        html += `<div class="cal-day" style="height:${height}px; background:${gridLines};">`;
+
+        // Greedily place overlapping events side by side (as in schedule_maker.py)
+        const dayEvents = evs.filter(ev => ev.date === d)
+          .sort((a, b) => a.start.localeCompare(b.start) || a.room.localeCompare(b.room));
+        const lanes = [];
+        dayEvents.forEach(ev => {
+          const lane = lanes.find(l => l.every(o => ev.end <= o.start || ev.start >= o.end));
+          if (lane) lane.push(ev); else lanes.push([ev]);
+        });
+
+        lanes.forEach((lane, i) => lane.forEach(ev => {
+          const top = (timeToMinutes(ev.start) - startHour * 60) * PX_PER_MIN;
+          const h = (timeToMinutes(ev.end) - timeToMinutes(ev.start)) * PX_PER_MIN;
+          const tooltip = `${title ? title + '\n' : ''}${ev.room}, ${ev.start}–${ev.end}\n${ev.names.join('\n')}`;
+          html += `<div class="event-block" title="${esc(tooltip)}" style="background:${roomColors[ev.room]};
+              top:${top + 1}px; height:${h - 2}px; left:calc(${(100 * i) / lanes.length}% + 2px); width:calc(${100 / lanes.length}% - 4px);">
+            ${title ? `<div class="event-title">${esc(title)}</div>` : ''}
+            <div class="room-label">[${esc(ev.room)}]</div>
+            <div class="event-names">${ev.names.map(n => `<div${n === person ? ' class="selected"' : ''}>${esc(n)}</div>`).join('')}</div>
+          </div>`;
+        }));
+        html += '</div>';
+      });
+
+      container.innerHTML = html + '</div>';
+    }
+
+    function renderTable(evs, person) {
+      document.getElementById('events-panel').style.display = evs.length ? 'block' : 'none';
+      document.getElementById('events-title').textContent = `Events (${evs.length})`;
+      document.getElementById('events-body').innerHTML = evs
+        .slice().sort((a, b) => (a.date + a.start + a.room).localeCompare(b.date + b.start + b.room))
+        .map(ev => `<tr><td>${ev.date}</td><td>${ev.start}</td><td>${ev.end}</td><td>${esc(ev.room)}</td>
+          <td>${ev.names.map(n => n === person ? `<b>${esc(n)}</b>` : esc(n)).join(', ')}</td></tr>`)
+        .join('');
+    }
+
+    function sheetsFormula() {
+      const base = location.origin + location.pathname;
+      const title = (titleInput.value || 'DL-lab1').replace(/"/g, '""');
+      return `=HYPERLINK("${base}#title=" & ENCODEURL("${title}") & "&data=" & ENCODEURL(TEXTJOIN(CHAR(9), TRUE, A1:D20)), "Open schedule")`;
+    }
+
+    // --- iCalendar export ---
+
+    // Local (browser time zone) date and time → UTC iCalendar timestamp
+    function icsDate(date, time) {
+      return new Date(`${date}T${time}`).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    }
+
+    function icsEscape(s) {
+      return s.replace(/[\\;,]/g, '\\$&').replace(/\r?\n/g, '\\n');
+    }
+
+    function createIcs(person, evs) {
+      const title = titleInput.value.trim() || 'Lab';
+      const stamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Schedule Maker//EN'];
+      evs.forEach(ev => {
+        // Stable UIDs so that re-importing an updated schedule replaces events instead of duplicating them
+        const uid = safeFileName(`${title}_${person}_${ev.date}T${ev.start}_${ev.room}`).replace(/[^\p{L}\p{N}_.-]/gu, '') + '@schedule-maker';
+        lines.push(
+          'BEGIN:VEVENT',
+          `UID:${uid}`,
+          `DTSTAMP:${stamp}`,
+          `DTSTART:${icsDate(ev.date, ev.start)}`,
+          `DTEND:${icsDate(ev.date, ev.end)}`,
+          `SUMMARY:${icsEscape(title)}`,
+          `LOCATION:${icsEscape(ev.room)}`,
+          `DESCRIPTION:${icsEscape('Participants: ' + ev.names.join(', '))}`,
+          'END:VEVENT'
+        );
+      });
+      lines.push('END:VCALENDAR');
+      return lines.join('\r\n');
+    }
+
+    function icsFileName(person) {
+      const title = titleInput.value.trim();
+      return safeFileName(title ? `${title}_${person}` : person) + '.ics';
+    }
+
+    function downloadBlob(content, filename, mimeType = 'text/calendar') {
+      const blob = (content instanceof Blob) ? content : new Blob([content], { type: mimeType });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 100);
+    }
+
+    // --- Events ---
+
+    dataInput.addEventListener('input', () => {
+      clearTimeout(parseTimer);
+      parseTimer = setTimeout(() => { update(); writeHash(); }, PARSE_DELAY_MS);
+    });
+
+    titleInput.addEventListener('input', () => {
+      document.getElementById('formula').textContent = sheetsFormula();
+      render();
+      writeHash();
+    });
+
+    personSelect.addEventListener('change', () => {
+      render();
+      writeHash();
+    });
+
+    document.getElementById('export-one-btn').onclick = () => {
+      const person = personSelect.value;
+      if (person) downloadBlob(createIcs(person, byPerson[person]), icsFileName(person));
+    };
+
+    document.getElementById('export-zip-btn').onclick = async () => {
+      try {
+        const zip = new JSZip();
+        Object.entries(byPerson).forEach(([person, evs]) => zip.file(icsFileName(person), createIcs(person, evs)));
+        const content = await zip.generateAsync({ type: 'blob' });
+        const title = titleInput.value.trim();
+        downloadBlob(content, (title ? safeFileName(title) + '_' : '') + 'calendars.zip', 'application/zip');
+      } catch (err) {
+        setStatus('Error: ' + err.message);
+      }
+    };
+
+    document.getElementById('copy-link-btn').onclick = async () => {
+      writeHash();
+      try {
+        await navigator.clipboard.writeText(location.href);
+        setStatus(`Link copied (${location.href.length} characters).`);
+      } catch (err) {
+        setStatus('Could not copy the link: ' + err.message);
+      }
+    };
+
+    window.addEventListener('hashchange', loadFromHash);
+    loadFromHash();
+  </script>
+</body>
+
+</html>
