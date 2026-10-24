@@ -19,45 +19,44 @@
       --text-muted: #888888;
       --border-color: #e0e6ed;
       /* Spacing & Borders */
-      --radius: 12px;
-      --radius-sm: 4px;
-      --space-xs: 5px;
-      --space-sm: 10px;
-      --space-md: 15px;
-      --space-lg: 20px;
-      --space-xl: 25px;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --radius: 6px;
+      --radius-sm: 3px;
+      --space-sm: 6px;
+      --space-md: 10px;
+      --shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     /* Base Styles */
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      padding: var(--space-lg);
-      margin: 0;
+      font-size: 14px;
+      padding: var(--space-sm);
+      max-width: 960px;
+      margin: 0 auto;
       background-color: var(--bg-app);
       color: var(--text-body);
-      line-height: 1.5;
+      line-height: 1.35;
     }
 
-    h2 {
-      text-align: center;
+    h1 {
+      font-size: 1.1rem;
       color: var(--text-main);
-      margin-bottom: var(--space-xl);
+      margin: 0 var(--space-sm) 0 0;
     }
 
     .panel {
       background: var(--bg-panel);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: var(--space-lg);
-      margin-bottom: var(--space-lg);
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-sm);
       border: 1px solid var(--border-color);
     }
 
     .panel-title {
       font-weight: 600;
       color: var(--text-main);
-      margin-bottom: var(--space-sm);
+      margin-bottom: 4px;
     }
 
     /* Toolbar */
@@ -71,28 +70,28 @@
     .field {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       font-weight: 600;
     }
 
     .input {
-      padding: 8px 12px;
+      padding: 3px 6px;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       background: white;
       min-width: 0;
     }
 
     .btn {
-      padding: 9px 16px;
+      padding: 4px 10px;
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
       font-weight: 600;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: white;
       background: var(--primary);
     }
@@ -128,16 +127,18 @@
     .cal-grid {
       display: grid;
       min-width: max-content;
+      justify-content: center;
     }
 
     .cal-day-title {
       text-align: center;
-      padding: 6px;
+      padding: 1px 4px;
       background: var(--bg-alt);
+      font-size: 0.85rem;
       font-weight: bold;
       color: #5a6c7f;
       border-left: 1px solid var(--border-color);
-      border-bottom: 2px solid var(--text-main);
+      border-bottom: 1px solid var(--text-main);
       white-space: nowrap;
     }
 
@@ -148,8 +149,8 @@
 
     .time-marker {
       position: absolute;
-      right: 8px;
-      font-size: 0.75rem;
+      right: 4px;
+      font-size: 0.7rem;
       color: var(--text-muted);
       font-weight: 600;
       transform: translateY(-50%);
@@ -167,17 +168,13 @@
     .event-block {
       position: absolute;
       border-radius: var(--radius-sm);
-      padding: 3px 5px;
+      padding: 1px 4px;
       color: #000;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       border: 1px solid rgba(0, 0, 0, 0.1);
       overflow: hidden;
       box-sizing: border-box;
-      line-height: 1.25;
-    }
-
-    .event-title {
-      color: rgba(0, 0, 0, 0.75);
+      line-height: 1.15;
     }
 
     .room-label {
@@ -201,25 +198,25 @@
       color: var(--error);
       white-space: pre-wrap;
       font-family: Consolas, monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       margin: 0;
     }
 
     /* Events table */
     .table-wrap {
       overflow-x: auto;
+      margin-top: var(--space-sm);
     }
 
     table {
       border-collapse: collapse;
-      width: 100%;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
 
     th,
     td {
       text-align: left;
-      padding: 4px 10px;
+      padding: 1px 12px 1px 4px;
       border-bottom: 1px solid var(--border-color);
       white-space: nowrap;
     }
@@ -244,10 +241,10 @@
       display: block;
       width: 100%;
       box-sizing: border-box;
-      height: 260px;
+      height: 180px;
       margin-top: var(--space-sm);
       font-family: Consolas, monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       tab-size: 4;
       white-space: pre;
       resize: vertical;
@@ -256,7 +253,7 @@
     code,
     .formula {
       font-family: Consolas, monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       background: var(--bg-alt);
       border-radius: var(--radius-sm);
     }
@@ -265,9 +262,13 @@
       padding: 1px 4px;
     }
 
+    #data-panel p {
+      margin: var(--space-sm) 0 2px;
+    }
+
     .formula {
       display: block;
-      padding: var(--space-sm);
+      padding: 4px var(--space-sm);
       border: 1px solid var(--border-color);
       white-space: pre-wrap;
       word-break: break-all;
@@ -276,10 +277,9 @@
 </head>
 
 <body>
-  <h2>Schedule maker</h2>
-
   <div class="panel toolbar">
-    <label class="field">Title <input type="text" id="title-input" class="input" placeholder="e.g. DL-lab1" size="16"></label>
+    <h1>Schedule maker</h1>
+    <label class="field">Title <input type="text" id="title-input" class="input" placeholder="e.g. DL-lab1" size="12"></label>
     <label class="field">Person
       <select id="person-select" class="input">
         <option value="">(All)</option>
@@ -298,8 +298,8 @@
     <pre id="messages"></pre>
   </div>
 
-  <div class="panel" id="events-panel" style="display: none;">
-    <div class="panel-title" id="events-title">Events</div>
+  <details class="panel" id="events-panel" style="display: none;">
+    <summary id="events-title">Events</summary>
     <div class="table-wrap">
       <table>
         <thead>
@@ -308,7 +308,7 @@
         <tbody id="events-body"></tbody>
       </table>
     </div>
-  </div>
+  </details>
 
   <details class="panel" id="data-panel">
     <summary>Data</summary>
@@ -327,7 +327,7 @@
   <script>
     // Pastel1 colors, assigned to rooms by order of appearance (as in schedule_maker.py)
     const PALETTE = ['#fbb4ae', '#b3cde3', '#ccebc5', '#decbe4', '#fed9a6', '#ffffcc', '#e5d8bd', '#fddaec', '#f2f2f2'];
-    const PX_PER_MIN = 1.1;
+    const PX_PER_MIN = 0.5;
     const PARSE_DELAY_MS = 300;
 
     const EVENT_RE = /(\d{4}-\d{2}-\d{2})\|(\d{1,2}:\d{2})\|(\d{1,2}:\d{2})\|([^|\t\r\n]+)/g;
@@ -482,23 +482,22 @@
       });
 
       const people = Object.keys(byPerson).sort((a, b) => a.localeCompare(b));
-      const selected = preferredPerson !== undefined ? preferredPerson : personSelect.value;
+      const selected = preferredPerson ?? personSelect.value;
       personSelect.innerHTML = '<option value="">(All)</option>' +
         people.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
       personSelect.value = people.includes(selected) ? selected : '';
 
-      const messagesPanel = document.getElementById('messages-panel');
-      messagesPanel.style.display = errors.length ? 'block' : 'none';
+      document.getElementById('messages-panel').style.display = errors.length ? 'block' : 'none';
       document.getElementById('messages').textContent = errors.join('\n');
       if (errors.length && !events.length) document.getElementById('data-panel').open = true;
 
-      document.getElementById('formula').textContent = sheetsFormula();
       render();
     }
 
     function render() {
       const person = personSelect.value;
       const shown = person ? byPerson[person] : events;
+      document.getElementById('formula').textContent = sheetsFormula();
       document.getElementById('export-one-btn').disabled = !person;
       document.getElementById('export-zip-btn').disabled = !events.length;
       renderCalendar(shown, person);
@@ -514,17 +513,18 @@
         return;
       }
 
-      const dates = evs.map(ev => ev.date).sort();
+      // The day and hour ranges come from all events, so every person's calendar has the same grid
+      const dates = events.map(ev => ev.date).sort();
       const days = [];
       for (let d = dates[0]; d <= dates[dates.length - 1]; d = addDays(d, 1)) days.push(d);
 
-      const startHour = Math.floor(Math.min(...evs.map(ev => timeToMinutes(ev.start))) / 60);
-      const endHour = Math.ceil(Math.max(...evs.map(ev => timeToMinutes(ev.end))) / 60);
+      const startHour = Math.floor(Math.min(...events.map(ev => timeToMinutes(ev.start))) / 60);
+      const endHour = Math.ceil(Math.max(...events.map(ev => timeToMinutes(ev.end))) / 60);
       const hourPx = 60 * PX_PER_MIN;
       const height = (endHour - startHour) * hourPx;
       const title = titleInput.value.trim();
 
-      let html = `<div class="cal-grid" style="grid-template-columns: 50px repeat(${days.length}, minmax(150px, 1fr));">`;
+      let html = `<div class="cal-grid" style="grid-template-columns: 38px repeat(${days.length}, minmax(80px, 160px));">`;
       html += '<div></div>';
       days.forEach(d => {
         const weekday = new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
@@ -555,8 +555,7 @@
           const h = (timeToMinutes(ev.end) - timeToMinutes(ev.start)) * PX_PER_MIN;
           const tooltip = `${title ? title + '\n' : ''}${ev.room}, ${ev.start}–${ev.end}\n${ev.names.join('\n')}`;
           html += `<div class="event-block" title="${esc(tooltip)}" style="background:${roomColors[ev.room]};
-              top:${top + 1}px; height:${h - 2}px; left:calc(${(100 * i) / lanes.length}% + 2px); width:calc(${100 / lanes.length}% - 4px);">
-            ${title ? `<div class="event-title">${esc(title)}</div>` : ''}
+              top:${top + 1}px; height:${h - 1}px; left:calc(${(100 * i) / lanes.length}% + 1px); width:calc(${100 / lanes.length}% - 2px);">
             <div class="room-label">[${esc(ev.room)}]</div>
             <div class="event-names">${ev.names.map(n => `<div${n === person ? ' class="selected"' : ''}>${esc(n)}</div>`).join('')}</div>
           </div>`;
@@ -585,9 +584,13 @@
 
     // --- iCalendar export ---
 
+    function icsUtc(d) {
+      return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    }
+
     // Local (browser time zone) date and time → UTC iCalendar timestamp
     function icsDate(date, time) {
-      return new Date(`${date}T${time}`).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      return icsUtc(new Date(`${date}T${time}`));
     }
 
     function icsEscape(s) {
@@ -596,11 +599,11 @@
 
     function createIcs(person, evs) {
       const title = titleInput.value.trim() || 'Lab';
-      const stamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const stamp = icsUtc(new Date());
       const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Schedule Maker//EN'];
       evs.forEach(ev => {
         // Stable UIDs so that re-importing an updated schedule replaces events instead of duplicating them
-        const uid = safeFileName(`${title}_${person}_${ev.date}T${ev.start}_${ev.room}`).replace(/[^\p{L}\p{N}_.-]/gu, '') + '@schedule-maker';
+        const uid = `${title}_${person}_${ev.date}T${ev.start}_${ev.room}`.replace(/\s+/g, '_').replace(/[^\p{L}\p{N}_.-]/gu, '') + '@schedule-maker';
         lines.push(
           'BEGIN:VEVENT',
           `UID:${uid}`,
@@ -633,16 +636,13 @@
 
     // --- Events ---
 
-    dataInput.addEventListener('input', () => {
+    function scheduleUpdate() {
       clearTimeout(parseTimer);
       parseTimer = setTimeout(() => { update(); writeHash(); }, PARSE_DELAY_MS);
-    });
+    }
 
-    titleInput.addEventListener('input', () => {
-      document.getElementById('formula').textContent = sheetsFormula();
-      render();
-      writeHash();
-    });
+    dataInput.addEventListener('input', scheduleUpdate);
+    titleInput.addEventListener('input', scheduleUpdate);
 
     personSelect.addEventListener('change', () => {
       render();
@@ -660,7 +660,7 @@
         Object.entries(byPerson).forEach(([person, evs]) => zip.file(icsFileName(person), createIcs(person, evs)));
         const content = await zip.generateAsync({ type: 'blob' });
         const title = titleInput.value.trim();
-        downloadBlob(content, (title ? safeFileName(title) + '_' : '') + 'calendars.zip', 'application/zip');
+        downloadBlob(content, (title ? safeFileName(title) + '_' : '') + 'calendars.zip');
       } catch (err) {
         setStatus('Error: ' + err.message);
       }
